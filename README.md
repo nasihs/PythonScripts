@@ -6,4 +6,4 @@
 
 - ### residualTorque
 
-  - @brief: A algorithm which aims to calculate the residual torque of the Torque-Angle curves
+  - @brief: An algorithm which aims to calculate the residual torque of the Torque-Angle curves
