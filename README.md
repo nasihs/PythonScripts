@@ -7,3 +7,7 @@
 - ### residualTorque
 
   - @brief: An algorithm which aims to calculate the residual torque of the Torque-Angle curves
+  
+- FactoryTorqueAccuracyTest
+
+  - @brief
