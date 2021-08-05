@@ -14,7 +14,7 @@ DATE = '11-06-21'
 ROOT_DIR = './'
 TEMPLATE_DIR = './template.xlsx'
 ACCURACY_DIR = './accuracy/'
-CERTIFICATE_DIR = './certifications/'
+CERTIFICATE_DIR = '\\certifications\\'
 
 certificate_no = 2106001
 date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -70,7 +70,7 @@ class Certificate(object):
         # self.certificate_no = 2108001
         # self.date = date
         while not self.accuracy_path:
-            print('请将扭矩精度检测结果文件夹拖放至此, 并按下回车确认:', end=' ')
+            print('请将扭矩精度检测结果文件夹拖放至此, 并按下回车确认:', end='')
             tmp_input = input()
             print('输入路径为:{}'.format(tmp_input))
             if os.path.exists(tmp_input):
@@ -115,7 +115,7 @@ class Certificate(object):
     def load_template(self, file_name):
         try:
             # self.file = 'template.xlsx'
-            self.file = os.path.normpath(self.path + '\\' + file_name)
+            self.file = os.path.normpath(self.path + '\\' + 'template.xlsx')
             self.wb = xw.Book(self.file)
             self.sheet = self.wb.sheets[0]
             print('读取模板成功:\'{}\''.format(self.file))
@@ -127,18 +127,6 @@ class Certificate(object):
     def load_accuracy_data(self, file):
         self.accuracy_df = pd.read_excel(file, index_col=0)
         print('load accuracy data.')
-        # print(self.accuracy_df)
-        # self.tmp_accuracy_data
-        # self.accuracy_wb = xw.Book(file)
-        # self.accuracy_sheet = self.accuracy_wb.sheets[0]
-        # self.tmp_accuracy_data = self.accuracy_sheet.range()
-
-    # def update_dict(self, cnt, capacity, ):
-    #     self.dict['certificateNo'] = self.curCertificateNo + cnt
-    #     self.dict['date'] = str(time.strftime("%d-%m-%Y", time.localtime()))
-    #     self.dict['productCode'] = f'010{capacity}001'.format(capacity=capacity)
-    #     self.dict['capacity'] = 'Torque Wrench {} WLAN'.format(capacity)
-    #     return
 
     def update_sheet(self, number):
         self.certificate_sheet.range(CER_NO).value = str(number)  # str(self.certificate_no + cnt)
@@ -160,12 +148,12 @@ class Certificate(object):
 
         self.get_excel_list()
         if self.num_to_generate == 0:
-            print('文件夹为空:\'{}\''.format(ACCURACY_DIR))
+            print('文件夹为空:\'{}\''.format(self.accuracy_path))
             return False
 
-        if not os.path.exists(CERTIFICATE_DIR):
+        if not os.path.exists(self.path + CERTIFICATE_DIR):
             print('证书路径不存在，创建文件夹\'{}\''.format(CERTIFICATE_DIR))
-            os.mkdir(CERTIFICATE_DIR)
+            os.mkdir(self.path + CERTIFICATE_DIR)
 
         print('准备生成证书, 共计数量:{}'.format(self.num_to_generate))
         for i in range(self.num_to_generate):
@@ -175,20 +163,17 @@ class Certificate(object):
             self.capacity = int(pattern2.match(file_name).group(2)) * 10
             print('Count:{}, Serial No:{}, capacity:{}'.format(i, self.serial, self.capacity))
 
-            # self.load_accuracy_data(ACCURACY_DIR + file_name)
             self.load_accuracy_data(self.accuracy_path + '\\' + file_name)
-            self.certificate_wb = xw.Book()
-            # self.certificate_wb.sheets[0] = self.sheet
-            self.certificate_sheet = self.wb.sheets[0]
+            self.certificate_wb = xw.Book(self.path + '\\' + 'template.xlsx')
+            self.certificate_sheet = self.certificate_wb.sheets[0]
             tmp_cer_no = self.certificate_no + i
             self.update_sheet(tmp_cer_no)
-            self.certificate_wb.save(CERTIFICATE_DIR + str(tmp_cer_no))
+            self.certificate_wb.save(self.path + CERTIFICATE_DIR + str(tmp_cer_no))
             self.certificate_wb.close()
             print('Count {} finished.'.format(i))
 
         app.kill()
         print('生成证书完成, 位于: {}'.format(self.path + '\\certifications'))
-        input()
         return True
 
 
