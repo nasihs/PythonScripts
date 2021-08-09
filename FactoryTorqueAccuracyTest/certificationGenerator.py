@@ -1,15 +1,17 @@
 """
 This is a script which is used to generate the factory accuracy certification.
+此脚本用于生成扭矩扳手标定证书
+使用方法：
+1.
 """
-# encoding: utf-8
-import sys
+
 import time
 import os
 import re
 import xlwings as xw
 import pandas as pd
 
-SW_VERSION = '0.1.3'
+SW_VERSION = '0.1.5'
 DATE = '11-06-21'
 ROOT_DIR = './'
 TEMPLATE_DIR = './template.xlsx'
@@ -168,7 +170,7 @@ class Certificate(object):
             self.certificate_sheet = self.certificate_wb.sheets[0]
             tmp_cer_no = self.certificate_no + i
             self.update_sheet(tmp_cer_no)
-            self.certificate_wb.save(self.path + CERTIFICATE_DIR + str(tmp_cer_no))
+            self.certificate_wb.save(self.path + CERTIFICATE_DIR + str(tmp_cer_no) + '.xlsx')
             self.certificate_wb.close()
             print('Count {} finished.'.format(i))
 

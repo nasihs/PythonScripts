@@ -1,0 +1,3 @@
+@echo off
+echo Install Python...
+python-3.9.6-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
