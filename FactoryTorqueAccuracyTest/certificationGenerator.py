@@ -1,8 +1,6 @@
 """
 This is a script which is used to generate the factory accuracy certification.
 此脚本用于生成扭矩扳手标定证书
-使用方法：
-1.
 """
 
 import time
@@ -11,7 +9,7 @@ import re
 import xlwings as xw
 import pandas as pd
 
-SW_VERSION = '0.1.5'
+SW_VERSION = '0.1.6  2021-8-13'
 DATE = '11-06-21'
 ROOT_DIR = './'
 TEMPLATE_DIR = './template.xlsx'
@@ -158,12 +156,13 @@ class Certificate(object):
             os.mkdir(self.path + CERTIFICATE_DIR)
 
         print('准备生成证书, 共计数量:{}'.format(self.num_to_generate))
+        input('按下<回车键>开始, 过程中可能有Excel文件打开, 请勿随意操作.')
         for i in range(self.num_to_generate):
             file_name = self.excels[i]
             print(file_name)
             self.serial = pattern.match(file_name).group(0)
             self.capacity = int(pattern2.match(file_name).group(2)) * 10
-            print('Count:{}, Serial No:{}, capacity:{}'.format(i, self.serial, self.capacity))
+            print('正在生成第 {} 张证书, Serial No:{}, capacity:{}'.format(i+1, self.serial, self.capacity))
 
             self.load_accuracy_data(self.accuracy_path + '\\' + file_name)
             self.certificate_wb = xw.Book(self.path + '\\' + 'template.xlsx')
@@ -172,7 +171,7 @@ class Certificate(object):
             self.update_sheet(tmp_cer_no)
             self.certificate_wb.save(self.path + CERTIFICATE_DIR + str(tmp_cer_no) + '.xlsx')
             self.certificate_wb.close()
-            print('Count {} finished.'.format(i))
+            print('第 {} 张证书完成.'.format(i+1))
 
         app.kill()
         print('生成证书完成, 位于: {}'.format(self.path + '\\certifications'))

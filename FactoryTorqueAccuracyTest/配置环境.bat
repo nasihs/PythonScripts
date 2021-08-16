@@ -13,6 +13,8 @@ pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 pip install -r requirements.txt
 pip install pywin32
 pip install openpyxl
+pip install pandas
+pip install xlwings
 echo Requirements installed.
 ::copy /y "pythoncom39.dll" "C:\Windows\System32\"
 echo 环境配置完成
