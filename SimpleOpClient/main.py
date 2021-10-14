@@ -11,8 +11,8 @@ import time
 import threading
 import keyboard
 
-SERVER_IP = '192.168.1.40'
-SERVER_PORT = 8686
+SERVER_IP = '192.168.17.191'
+SERVER_PORT = 4545
 MID0060 = bytes.fromhex('30 30 32 30 30 30 36 30 30 30 31 30 20 20 20 20 30 31 20 20 00')
 MID7408 = '00207408001         \0'.encode('utf-8')
 MID0005 = '002600050010        7408\x00'.encode('utf-8')
@@ -96,18 +96,22 @@ class OpClient:
 
             data_bytes = self.socket.recv(data_len)
             mid = data_bytes[0:4].decode('utf-8')
-            print('Recv:MID{}:{}'.format(mid, data_bytes))
+            # print('Recv:MID{}:{}'.format(mid, data_bytes))
             if mid == '0005':
+                print('\033[1;32mRecv:MID{}:{}\033[0m'.format(mid, data_bytes))
                 reply_of = data_bytes[-5:-1].decode('utf-8')
                 if reply_of == '0043' or reply_of == '0042' or reply_of == '0019':
                     self.state[reply_of] = True
                 else:
                     print(reply_of)
             elif mid == '0061':
+                print('Recv:MID{}:{}'.format(mid, data_bytes))
                 self.state['0061'] = True
             elif mid == '9999':
+                print('Recv:MID{}:{}'.format(mid, data_bytes))
                 pass
             elif mid == '7410':
+                print('Recv:MID{}:{}'.format(mid, data_bytes))
                 pass
             else:
                 print('Failed to resolve:{}'.format(data_bytes))
@@ -127,17 +131,17 @@ class OpClient:
             time.sleep(0.1)
             if time.time() - start_time_stamp > REPLY_TIMEOUT:
                 # if mid_number == '0042':
-                # print('Timeout.')
-                # self.state[mid_number] = True
+                #     print('Timeout.')
+                #     self.state[mid_number] = True
                 if mid_number == '0043':
                     self.socket.send(MID0043)
-                    print('Timeout, Resend:MID0043')
+                    print('\033[1;31mTimeout, Resend:MID0043\033[0m')
                 elif mid_number == '0042':
                     self.socket.send(MID0042)
-                    print('Timeout, Resend:MID0042')
+                    print('\033[1;31mTimeout, Resend:MID0042\033[0m')
                 elif mid_number == '0019':
                     self.socket.send(MID0019)
-                    print('Timeout, Resend:MID0019')
+                    print('\033[1;31mTimeout, Resend:MID0019\033[0m')
                 start_time_stamp = time.time()
         self.state[mid_number] = False
 
@@ -146,17 +150,21 @@ class OpClient:
         while repeat_time and self.connected:
             repeat_time -= 1
             self.socket.send(MID0043)
-            print('Send:MID0043')
+            print('\033[1;32mSend:MID0043\033[0m')
             self.wait_reply('0043')
             print('Unlocked.')
+
             self.socket.send(MID0019)
-            print('Send:MID0019')
+            print('\033[1;32mSend:MID0019\033[0m')
             self.wait_reply('0019')
+
             self.wait_reply('0061')
+
             self.socket.send(MID0042)
-            print('Send:MID0042')
+            print('\033[1;32mSend:MID0042\033[0m')
             self.wait_reply('0042')
             print('Locked.')
+
             time.sleep(2)
 
         self.connected = False
@@ -185,7 +193,7 @@ if __name__ == '__main__':
     c = OpClient(SERVER_IP, SERVER_PORT)
     if c.connect():
         c.subscribe('0060')
-        c.subscribe('7408')
+        # c.subscribe('7408')
         c.run()
 
 
