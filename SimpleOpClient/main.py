@@ -16,11 +16,11 @@ SERVER_PORT = 4545
 MID0060 = bytes.fromhex('30 30 32 30 30 30 36 30 30 30 31 30 20 20 20 20 30 31 20 20 00')
 MID7408 = '00207408001         \0'.encode('utf-8')
 MID0005 = '002600050010        7408\x00'.encode('utf-8')
-MID0019 = bytes.fromhex('30 30 32 35 30 30 31 39 30 30 31 30 20 20 20 20 30 31 20 20 30 30 32 30 31 00')
+MID0019 = bytes.fromhex('30 30 32 35 30 30 31 39 30 30 31 30 20 20 20 20 30 31 20 20 30 30 31 30 31 00')
 MID0042 = bytes.fromhex('30 30 32 30 30 30 34 32 30 30 31 30 20 20 20 20 30 31 20 20 00')
 MID0043 = bytes.fromhex('30 30 32 30 30 30 34 33 30 30 31 30 20 20 20 20 30 31 20 20 00')
 MID9999 = bytes.fromhex('30 30 32 30 39 39 39 39 30 30 31 20 20 20 20 20 20 20 20 20 00')
-REPLY_TIMEOUT = 3
+REPLY_TIMEOUT = 5
 
 
 class OpClient:
@@ -149,14 +149,14 @@ class OpClient:
         print('Start thread3.')
         while repeat_time and self.connected:
             repeat_time -= 1
+            self.socket.send(MID0019)
+            print('\033[1;32mSend:MID0019\033[0m')
+            self.wait_reply('0019')
+
             self.socket.send(MID0043)
             print('\033[1;32mSend:MID0043\033[0m')
             self.wait_reply('0043')
             print('Unlocked.')
-
-            self.socket.send(MID0019)
-            print('\033[1;32mSend:MID0019\033[0m')
-            self.wait_reply('0019')
 
             self.wait_reply('0061')
 
@@ -165,7 +165,7 @@ class OpClient:
             self.wait_reply('0042')
             print('Locked.')
 
-            time.sleep(2)
+            # time.sleep(2)
 
         self.connected = False
         self.socket.close()
